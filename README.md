@@ -1,6 +1,13 @@
 # godot3.2_countdown
 
-Um contador básico armazenando o tempo em um arquivo local
+Um contador básico armazenando o tempo em um arquivo local, você pode fechar o jogo que o contador continua a contagem.
+
+### Demonstração
+- https://www.youtube.com/watch?v=2PE0BiId_78
+
+[![Video com a explicação](https://img.youtube.com/vi/2PE0BiId_78/0.jpg)](https://www.youtube.com/watch?v=2PE0BiId_78)
+
+
 
 #### Você pode definir
 - name_countdown - Nome do contador ```string```
@@ -29,4 +36,8 @@ $countdown._start(null, true)
 ```
 $countdown._start() 
 ```
+
+
+### ...
+Vai utilizar esse código de forma comercial? Fique tranquilo pode usar de forma livre e sem precisar mencionar nada, claro que vou ficar contente se pelo menos lembrar da ajuda e compartilhar com os amigos, rs. Caso sinta no coração, considere me pagar um cafezinho :heart: -> https://ko-fi.com/thiagobruno
 
