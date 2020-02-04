@@ -2,6 +2,9 @@
 
 Um contador básico armazenando o tempo em um arquivo local, você pode fechar o jogo que o contador continua a contagem.
 
+Você pode adaptar para obter os dados de um servidor para mais segurança!
+
+
 ### Demonstração
 - https://www.youtube.com/watch?v=2PE0BiId_78
 
