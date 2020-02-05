@@ -13,7 +13,7 @@ você pode fechar o jogo que o contador continua a contagem.
 ----------
 
 ### Instalação
-- Copie a pasta addons para seu projeto ou faça download do [addon Countdown](https://github.com/thiagobruno/godot3.2_countdown/blob/master/addons/countdown.zip)
+- Copie a pasta addons para seu projeto ou faça [download do addon "Countdown"](https://github.com/thiagobruno/godot3.2_countdown/blob/master/addons/countdown.zip)
 - Acesse as configurações do projeto, e habilite o plugin "Countdown"
 - Para usar, adicione um novo node do tipo "Countdown" e coloque suas configurações
 
