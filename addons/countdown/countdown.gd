@@ -1,17 +1,9 @@
-extends Node2D
-
-enum HALIGN { LEFT,CENTER,RIGHT }
-enum VALIGN { BOTTOM,CENTER,TOP }
+extends Label
 
 export var name_countdown = 'timer1'
 export var wait_time = '00:00:00'
 export var end_label = 'GET IT!'
 export var unix_server = ''
-export(Font) var font_label = null
-export(HALIGN) var font_align = HALIGN.CENTER
-export(VALIGN) var font_valign = VALIGN.CENTER
-export(Vector2) var font_rect_size = Vector2(100,50)
-export(Color) var font_color = Color(1,1,1,1)
 export(bool) var auto_restart = false
 var ended:bool = false
 var seconds:int = 0
@@ -20,7 +12,6 @@ var startSeconds = 0
 var loaded = false
 
 var timer = Timer.new()
-var label = Label.new()
 var http = HTTPRequest.new()
 
 signal start(_name_countdown)
@@ -30,27 +21,6 @@ func _ready():
 	timer.connect("timeout", self, "_on_timer_timeout")
 	http.connect("request_completed", self, "_on_http_request_completed")
 	
-	label.text = "00:00:00"
-	label.add_font_override('font', font_label)
-	
-	if font_align == HALIGN.LEFT:
-		label.align = HALIGN_LEFT
-	elif font_align == HALIGN.CENTER:
-		label.align = HALIGN_CENTER
-	elif font_align == HALIGN.RIGHT:
-		label.align = HALIGN_RIGHT
-	
-	if font_valign == VALIGN.BOTTOM:
-		label.valign = VALIGN_BOTTOM
-	elif font_valign == VALIGN.CENTER:
-		label.valign = VALIGN_CENTER
-	elif font_valign == VALIGN.TOP:
-		label.valign = VALIGN_TOP
-	
-	label.rect_size = font_rect_size
-	label.add_color_override("font_color", font_color)
-	
-	add_child(label)
 	add_child(http)
 	add_child(timer)
 	
@@ -70,7 +40,7 @@ func _format():
 	
 	if seconds >= 0:
 		var f = common.formatSeconds(seconds)
-		label.text = str(f[0], ":", f[1], ":", f[2])
+		self.text = str(f[0], ":", f[1], ":", f[2])
 
 func _start(_wait_time = null, _restart = false):
 	loaded = false
@@ -119,7 +89,7 @@ func _finish():
 	timer.stop()
 	
 	if end_label != "" and end_label!=null:
-		label.text = str(end_label)
+		self.text = str(end_label)
 	
 	if auto_restart == true:
 		_start(wait_time, true)

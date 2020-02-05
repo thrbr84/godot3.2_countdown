@@ -41,56 +41,97 @@ self_modulate = Color( 0.5, 0.07, 0.07, 1 )
 position = Vector2( 202.815, 414.238 )
 normal = ExtResource( 3 )
 
-[node name="Countdown" type="Node2D" parent="buttons/btn1"]
-position = Vector2( 48, 28 )
+[node name="Countdown" type="Label" parent="buttons/btn1"]
+margin_right = 297.0
+margin_bottom = 98.0
+custom_fonts/font = SubResource( 1 )
+text = "00:00:00"
+align = 1
+valign = 1
 script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 wait_time = "00:00:10"
-font_label = SubResource( 1 )
 
 [node name="btn2" type="TouchScreenButton" parent="buttons"]
 self_modulate = Color( 0.5, 0.07, 0.07, 1 )
 position = Vector2( 202.815, 579.229 )
 normal = ExtResource( 3 )
 
-[node name="Countdown" type="Node2D" parent="buttons/btn2"]
-position = Vector2( 48, 28 )
+[node name="Countdown" type="Label" parent="buttons/btn2"]
+margin_right = 298.0
+margin_bottom = 97.0
+custom_fonts/font = SubResource( 1 )
+text = "00:00:00"
+align = 1
+valign = 1
 script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 name_countdown = "timer2"
 wait_time = "00:02:00"
-font_label = SubResource( 1 )
 
 [node name="btn3" type="TouchScreenButton" parent="buttons"]
 self_modulate = Color( 0.5, 0.07, 0.07, 1 )
 position = Vector2( 202.815, 998.238 )
 normal = SubResource( 2 )
 
-[node name="Label" type="Label" parent="buttons/btn3"]
-margin_left = -185.0
-margin_top = -49.0
-margin_right = 504.0
-margin_bottom = -3.0
+[node name="Countdown" type="Label" parent="buttons/btn3"]
+margin_right = 301.0
+margin_bottom = 102.0
+custom_fonts/font = SubResource( 1 )
+text = "00:00:00"
+align = 1
+valign = 1
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+name_countdown = "timer3"
+wait_time = "00:00:15"
+unix_server = "http://unixtimestamp.birdy.studio"
+
+[node name="Countdown" type="Label" parent="buttons"]
+margin_left = 4.0
+margin_top = 764.0
+margin_right = 716.0
+margin_bottom = 821.0
+custom_fonts/font = SubResource( 1 )
+text = "00:00:00"
+align = 1
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+name_countdown = "timer4"
+wait_time = "00:00:20"
+auto_restart = true
+
+[node name="title1" type="Label" parent="buttons"]
+margin_left = 173.815
+margin_top = 355.238
+margin_right = 535.815
+margin_bottom = 401.238
+custom_fonts/font = SubResource( 3 )
+text = "unix timestamp from local"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="title2" type="Label" parent="buttons"]
+margin_left = 173.815
+margin_top = 947.238
+margin_right = 535.815
+margin_bottom = 993.238
 custom_fonts/font = SubResource( 3 )
 text = "unix timestamp from server"
 align = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="Countdown" type="Node2D" parent="buttons/btn3"]
-position = Vector2( 48, 28 )
-script = ExtResource( 6 )
-name_countdown = "timer3"
-wait_time = "00:00:15"
-unix_server = "http://unixtimestamp.birdy.studio"
-font_label = SubResource( 1 )
-
-[node name="Countdown" type="Node2D" parent="buttons"]
-position = Vector2( 250, 750 )
-script = ExtResource( 6 )
-name_countdown = "timer4"
-wait_time = "00:00:20"
-font_label = SubResource( 1 )
-auto_restart = true
 [connection signal="pressed" from="buttons/btn1" to="." method="_on_btn1_pressed"]
 [connection signal="finish" from="buttons/btn1/Countdown" to="." method="_on_Countdown_finish"]
 [connection signal="start" from="buttons/btn1/Countdown" to="." method="_on_Countdown_start"]
