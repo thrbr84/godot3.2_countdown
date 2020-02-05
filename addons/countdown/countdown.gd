@@ -4,6 +4,7 @@ export var name_countdown = 'timer1'
 export var wait_time = '00:00:00'
 export var end_label = 'GET IT!'
 export var unix_server = ''
+export(bool) var auto_start = true
 export(bool) var auto_restart = false
 var ended:bool = false
 var seconds:int = 0
@@ -24,7 +25,8 @@ func _ready():
 	add_child(http)
 	add_child(timer)
 	
-	_start()
+	if auto_start == true:
+		_start()
 
 func _on_timer_timeout():
 	if !loaded: return
