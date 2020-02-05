@@ -27,6 +27,15 @@ você pode fechar o jogo que o contador continua a contagem.
 
 *O node "countdown" emite um sinal "start" e "finish" e passa como parâmetro o nome do contador "name_countdown"
 
+#### Usando o unix_server
+Você pode montar em seu server uma página para retornar uma timestamp unix, veja um exemplo utilizando o PHP
+
+```php
+<?php
+$date = new DateTime();
+echo $date->getTimestamp();
+```
+
 
 #### Exemplos:
 - O primeiro parâmetro pode ser o tempo ou null! Se for null, o countdown vai pegar a informação configurada no node
