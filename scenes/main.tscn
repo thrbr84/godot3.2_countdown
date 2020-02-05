@@ -1,0 +1,104 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://scripts/main.gd" type="Script" id=1]
+[ext_resource path="res://assets/button.png" type="Texture" id=3]
+[ext_resource path="res://icon.png" type="Texture" id=4]
+[ext_resource path="res://assets/fonts/LIONELLORegular.ttf" type="DynamicFontData" id=5]
+[ext_resource path="res://addons/countdown/countdown.gd" type="Script" id=6]
+
+[sub_resource type="DynamicFont" id=1]
+size = 60
+font_data = ExtResource( 5 )
+
+[sub_resource type="StreamTexture" id=2]
+flags = 4
+load_path = "res://.import/button.png-c79155b6e84601a7c5a042250ad77b07.stex"
+
+[sub_resource type="DynamicFont" id=3]
+size = 30
+font_data = ExtResource( 5 )
+
+[node name="main" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="bkg" type="ColorRect" parent="."]
+margin_right = 720.0
+margin_bottom = 300.0
+color = Color( 0.996078, 0.341176, 0.133333, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="icon" type="Sprite" parent="bkg"]
+position = Vector2( 366.4, 148.018 )
+scale = Vector2( 0.265379, 0.265379 )
+texture = ExtResource( 4 )
+
+[node name="buttons" type="Node2D" parent="."]
+
+[node name="btn1" type="TouchScreenButton" parent="buttons"]
+self_modulate = Color( 0.5, 0.07, 0.07, 1 )
+position = Vector2( 202.815, 414.238 )
+normal = ExtResource( 3 )
+
+[node name="Countdown" type="Node2D" parent="buttons/btn1"]
+position = Vector2( 48, 28 )
+script = ExtResource( 6 )
+wait_time = "00:00:10"
+font_label = SubResource( 1 )
+
+[node name="btn2" type="TouchScreenButton" parent="buttons"]
+self_modulate = Color( 0.5, 0.07, 0.07, 1 )
+position = Vector2( 202.815, 579.229 )
+normal = ExtResource( 3 )
+
+[node name="Countdown" type="Node2D" parent="buttons/btn2"]
+position = Vector2( 48, 28 )
+script = ExtResource( 6 )
+name_countdown = "timer2"
+wait_time = "00:02:00"
+font_label = SubResource( 1 )
+
+[node name="btn3" type="TouchScreenButton" parent="buttons"]
+self_modulate = Color( 0.5, 0.07, 0.07, 1 )
+position = Vector2( 202.815, 998.238 )
+normal = SubResource( 2 )
+
+[node name="Label" type="Label" parent="buttons/btn3"]
+margin_left = -185.0
+margin_top = -49.0
+margin_right = 504.0
+margin_bottom = -3.0
+custom_fonts/font = SubResource( 3 )
+text = "unix timestamp from server"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Countdown" type="Node2D" parent="buttons/btn3"]
+position = Vector2( 48, 28 )
+script = ExtResource( 6 )
+name_countdown = "timer3"
+wait_time = "00:00:15"
+unix_server = "http://unixtimestamp.birdy.studio"
+font_label = SubResource( 1 )
+
+[node name="Countdown" type="Node2D" parent="buttons"]
+position = Vector2( 250, 750 )
+script = ExtResource( 6 )
+name_countdown = "timer4"
+wait_time = "00:00:20"
+font_label = SubResource( 1 )
+auto_restart = true
+[connection signal="pressed" from="buttons/btn1" to="." method="_on_btn1_pressed"]
+[connection signal="finish" from="buttons/btn1/Countdown" to="." method="_on_Countdown_finish"]
+[connection signal="start" from="buttons/btn1/Countdown" to="." method="_on_Countdown_start"]
+[connection signal="pressed" from="buttons/btn2" to="." method="_on_btn2_pressed"]
+[connection signal="finish" from="buttons/btn2/Countdown" to="." method="_on_Countdown_finish"]
+[connection signal="start" from="buttons/btn2/Countdown" to="." method="_on_Countdown_start"]
+[connection signal="pressed" from="buttons/btn3" to="." method="_on_btn3_pressed"]
+[connection signal="finish" from="buttons/btn3/Countdown" to="." method="_on_Countdown_finish"]
+[connection signal="start" from="buttons/btn3/Countdown" to="." method="_on_Countdown_start"]
+[connection signal="finish" from="buttons/Countdown" to="." method="_on_Countdown_finish"]
+[connection signal="start" from="buttons/Countdown" to="." method="_on_Countdown_start"]

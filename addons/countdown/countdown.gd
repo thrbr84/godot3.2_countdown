@@ -1,9 +1,15 @@
 extends Node2D
 
+enum FALIGN { LEFT,CENTER,RIGHT }
+
 export var name_countdown = 'timer1'
 export var wait_time = '00:00:00'
 export var end_label = 'GET IT!'
 export var unix_server = ''
+export(Font) var font_label = null
+export(FALIGN) var font_align = FALIGN.CENTER
+export(Vector2) var font_rect_size = Vector2(100,50)
+export(Color) var font_color = Color(1,1,1,1)
 export(bool) var auto_restart = false
 var ended:bool = false
 var seconds:int = 0
@@ -11,11 +17,34 @@ var startDate = OS.get_datetime(true)
 var startSeconds = 0
 var loaded = false
 
+var timer = Timer.new()
+var label = Label.new()
+var http = HTTPRequest.new()
+
 signal start(_name_countdown)
 signal finish(_name_countdown)
 
 func _ready():
-	$timer.connect("timeout", self, "_on_timer_timeout")
+	timer.connect("timeout", self, "_on_timer_timeout")
+	http.connect("request_completed", self, "_on_http_request_completed")
+	
+	label.text = "00:00:00"
+	label.add_font_override('font', font_label)
+	
+	if font_align == FALIGN.LEFT:
+		label.align = HALIGN_LEFT
+	elif font_align == FALIGN.CENTER:
+		label.align = HALIGN_CENTER
+	elif font_align == FALIGN.RIGHT:
+		label.align = HALIGN_RIGHT
+	
+	label.rect_size = font_rect_size
+	label.add_color_override("font_color", font_color)
+	
+	add_child(label)
+	add_child(http)
+	add_child(timer)
+	
 	_start()
 
 func _on_timer_timeout():
@@ -32,7 +61,7 @@ func _format():
 	
 	if seconds >= 0:
 		var f = common.formatSeconds(seconds)
-		$label.text = str(f[0], ":", f[1], ":", f[2])
+		label.text = str(f[0], ":", f[1], ":", f[2])
 
 func _start(_wait_time = null, _restart = false):
 	loaded = false
@@ -40,7 +69,6 @@ func _start(_wait_time = null, _restart = false):
 		wait_time = _wait_time
 
 	if _restart == true:
-		prints(name_countdown, 'reset')
 		common.setCountdown(name_countdown, null)
 		common.save_game()
 		
@@ -60,7 +88,7 @@ func _initCountdown():
 	
 	ended = false
 	_format()
-	$timer.start()
+	timer.start()
 	emit_signal("start", name_countdown)
 
 func _newTimer()->void:
@@ -79,20 +107,19 @@ func _finish():
 	if !loaded: return
 	ended = true
 	emit_signal("finish", name_countdown)
-	$timer.stop()
+	timer.stop()
 	
 	if end_label != "" and end_label!=null:
-		$label.text = str(end_label)
+		label.text = str(end_label)
 	
 	if auto_restart == true:
-		prints(name_countdown, " auto restart")
 		_start(wait_time, true)
 
 
 func _getDateTime():
 	if unix_server != '' and unix_server != null:
 		var headers = ["Content-Type: text/plain"]
-		$http.request(unix_server, headers, true, HTTPClient.METHOD_GET)
+		http.request(unix_server, headers, true, HTTPClient.METHOD_GET)
 	else:
 		startDate = OS.get_datetime(true)
 		startSeconds = OS.get_unix_time_from_datetime(startDate)
@@ -106,8 +133,8 @@ func _on_http_request_completed(result, response_code, headers, body):
 			HTTPRequest.RESULT_SUCCESS:
 				ret = body.get_string_from_utf8()
 				if ret != null and ret != '':
-					prints('get date server')
 					startSeconds = int(ret)
 					loaded = true
 	
 	_initCountdown()
+

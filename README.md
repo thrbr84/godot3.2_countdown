@@ -11,7 +11,9 @@ Você pode adaptar para obter os dados de um servidor para mais segurança!
 
 [![Video com a explicação](https://img.youtube.com/vi/2PE0BiId_78/0.jpg)](https://www.youtube.com/watch?v=2PE0BiId_78)
 
-
+### Instalação
+- Copie a pasta addons para seu projeto
+- Acesse as configurações do projeto, e habilite o plugin "Countdown"
 
 #### Você pode definir
 - name_countdown - Nome do contador ```string```
