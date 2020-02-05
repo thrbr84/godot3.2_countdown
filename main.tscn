@@ -1,9 +1,18 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scripts/main.gd" type="Script" id=1]
 [ext_resource path="res://scenes/countdown.tscn" type="PackedScene" id=2]
 [ext_resource path="res://assets/button.png" type="Texture" id=3]
 [ext_resource path="res://icon.png" type="Texture" id=4]
+[ext_resource path="res://assets/fonts/LIONELLORegular.ttf" type="DynamicFontData" id=5]
+
+[sub_resource type="StreamTexture" id=2]
+flags = 4
+load_path = "res://.import/button.png-c79155b6e84601a7c5a042250ad77b07.stex"
+
+[sub_resource type="DynamicFont" id=1]
+size = 30
+font_data = ExtResource( 5 )
 
 [node name="main" type="Node2D"]
 script = ExtResource( 1 )
@@ -32,6 +41,29 @@ normal = ExtResource( 3 )
 position = Vector2( 48, 28 )
 wait_time = "00:00:10"
 
+[node name="btn3" type="TouchScreenButton" parent="buttons"]
+self_modulate = Color( 0.5, 0.07, 0.07, 1 )
+position = Vector2( 202.815, 998.238 )
+normal = SubResource( 2 )
+
+[node name="countdown" parent="buttons/btn3" instance=ExtResource( 2 )]
+position = Vector2( 48, 28 )
+name_countdown = "timer3"
+wait_time = "00:00:10"
+unix_server = "http://unixtimestamp.birdy.studio"
+
+[node name="Label" type="Label" parent="buttons/btn3"]
+margin_left = -185.0
+margin_top = -49.0
+margin_right = 504.0
+margin_bottom = -3.0
+custom_fonts/font = SubResource( 1 )
+text = "unix timestamp from server"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="btn2" type="TouchScreenButton" parent="buttons"]
 self_modulate = Color( 0.5, 0.07, 0.07, 1 )
 position = Vector2( 202.815, 579.229 )
@@ -49,6 +81,8 @@ wait_time = "00:01:00"
 auto_restart = true
 [connection signal="pressed" from="buttons/btn1" to="." method="_on_btn1_pressed"]
 [connection signal="finish" from="buttons/btn1/countdown" to="." method="_on_countdown_finish"]
+[connection signal="pressed" from="buttons/btn3" to="." method="_on_btn3_pressed"]
+[connection signal="finish" from="buttons/btn3/countdown" to="." method="_on_countdown_finish"]
 [connection signal="pressed" from="buttons/btn2" to="." method="_on_btn2_pressed"]
 [connection signal="finish" from="buttons/btn2/countdown" to="." method="_on_countdown_finish"]
 [connection signal="finish" from="buttons/countdown2" to="." method="_on_countdown_finish"]

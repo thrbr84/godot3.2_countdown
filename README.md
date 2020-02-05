@@ -1,6 +1,7 @@
 # godot3.2_countdown
 
-Um contador básico armazenando o tempo em um arquivo local, você pode fechar o jogo que o contador continua a contagem.
+Um contador básico armazenando o tempo em um arquivo local ou recuperado de um servidor, 
+você pode fechar o jogo que o contador continua a contagem.
 
 Você pode adaptar para obter os dados de um servidor para mais segurança!
 
@@ -15,8 +16,9 @@ Você pode adaptar para obter os dados de um servidor para mais segurança!
 #### Você pode definir
 - name_countdown - Nome do contador ```string```
 - wait_time - Tempo de espera ```HH:MM:SS```, exemplo: ```00:01:00```
+- unix_server - Servidor Unix, exemplo: ```https://unixtimestamp.birdy.studio``` o servidor deve retornar um timestamp puro! 
 - auto_restart - Auto Reinicialização
-
+- end_label - Label final, você pode mostrar uma mensagem no fim do countdown
 *O node "countdown" emite um sinal "finish" quando o contador é finalizado e passa como parâmetro o nome do contador "name_countdown"
 
 
