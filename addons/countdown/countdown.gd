@@ -1,13 +1,15 @@
 extends Node2D
 
-enum FALIGN { LEFT,CENTER,RIGHT }
+enum HALIGN { LEFT,CENTER,RIGHT }
+enum VALIGN { BOTTOM,CENTER,TOP }
 
 export var name_countdown = 'timer1'
 export var wait_time = '00:00:00'
 export var end_label = 'GET IT!'
 export var unix_server = ''
 export(Font) var font_label = null
-export(FALIGN) var font_align = FALIGN.CENTER
+export(HALIGN) var font_align = HALIGN.CENTER
+export(VALIGN) var font_valign = VALIGN.CENTER
 export(Vector2) var font_rect_size = Vector2(100,50)
 export(Color) var font_color = Color(1,1,1,1)
 export(bool) var auto_restart = false
@@ -31,12 +33,19 @@ func _ready():
 	label.text = "00:00:00"
 	label.add_font_override('font', font_label)
 	
-	if font_align == FALIGN.LEFT:
+	if font_align == HALIGN.LEFT:
 		label.align = HALIGN_LEFT
-	elif font_align == FALIGN.CENTER:
+	elif font_align == HALIGN.CENTER:
 		label.align = HALIGN_CENTER
-	elif font_align == FALIGN.RIGHT:
+	elif font_align == HALIGN.RIGHT:
 		label.align = HALIGN_RIGHT
+	
+	if font_valign == VALIGN.BOTTOM:
+		label.valign = VALIGN_BOTTOM
+	elif font_valign == VALIGN.CENTER:
+		label.valign = VALIGN_CENTER
+	elif font_valign == VALIGN.TOP:
+		label.valign = VALIGN_TOP
 	
 	label.rect_size = font_rect_size
 	label.add_color_override("font_color", font_color)
