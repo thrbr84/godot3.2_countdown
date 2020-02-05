@@ -45,6 +45,9 @@ normal = ExtResource( 3 )
 margin_right = 297.0
 margin_bottom = 98.0
 custom_fonts/font = SubResource( 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_offset_x = 2
+custom_constants/shadow_offset_y = 2
 text = "00:00:00"
 align = 1
 valign = 1
@@ -60,9 +63,12 @@ position = Vector2( 202.815, 579.229 )
 normal = ExtResource( 3 )
 
 [node name="Countdown" type="Label" parent="buttons/btn2"]
-margin_right = 298.0
-margin_bottom = 97.0
+margin_right = 297.0
+margin_bottom = 98.0
 custom_fonts/font = SubResource( 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_offset_x = 2
+custom_constants/shadow_offset_y = 2
 text = "00:00:00"
 align = 1
 valign = 1
@@ -79,9 +85,12 @@ position = Vector2( 202.815, 998.238 )
 normal = SubResource( 2 )
 
 [node name="Countdown" type="Label" parent="buttons/btn3"]
-margin_right = 301.0
-margin_bottom = 102.0
+margin_right = 297.0
+margin_bottom = 98.0
 custom_fonts/font = SubResource( 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_offset_x = 2
+custom_constants/shadow_offset_y = 2
 text = "00:00:00"
 align = 1
 valign = 1
@@ -99,8 +108,12 @@ margin_top = 764.0
 margin_right = 716.0
 margin_bottom = 821.0
 custom_fonts/font = SubResource( 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_offset_x = 2
+custom_constants/shadow_offset_y = 2
 text = "00:00:00"
 align = 1
+valign = 1
 script = ExtResource( 6 )
 __meta__ = {
 "_edit_use_anchors_": false
