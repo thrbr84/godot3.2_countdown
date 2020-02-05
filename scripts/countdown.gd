@@ -11,6 +11,7 @@ var startDate = OS.get_datetime(true)
 var startSeconds = 0
 var loaded = false
 
+signal start(_name_countdown)
 signal finish(_name_countdown)
 
 func _ready():
@@ -46,13 +47,11 @@ func _start(_wait_time = null, _restart = false):
 	_getDateTime()
 	
 func _initCountdown():
+	if !loaded: return
 	var current_timer = common.getCountdown(name_countdown)
 	if current_timer is Dictionary:
 		if current_timer.has("end"):
-			#var startDate = OS.get_datetime(true)
-			#var startSeconds = OS.get_unix_time_from_datetime(startDate)
 			seconds = int(current_timer.end) - int(startSeconds)
-			
 			if seconds < 0:
 				_finish()
 				return
@@ -62,10 +61,9 @@ func _initCountdown():
 	ended = false
 	_format()
 	$timer.start()
+	emit_signal("start", name_countdown)
 
 func _newTimer()->void:
-	#var startDate = OS.get_datetime(true)
-	#var startSeconds = OS.get_unix_time_from_datetime(startDate)
 	var addSeconds = common.formatTime2Seconds(wait_time)
 	var endSeconds = int(startSeconds) + int(addSeconds)
 	
@@ -78,6 +76,7 @@ func _newTimer()->void:
 	common.save_game()
 
 func _finish():
+	if !loaded: return
 	ended = true
 	emit_signal("finish", name_countdown)
 	$timer.stop()
@@ -106,16 +105,9 @@ func _on_http_request_completed(result, response_code, headers, body):
 		match result:
 			HTTPRequest.RESULT_SUCCESS:
 				ret = body.get_string_from_utf8()
-				prints('SERVER:', ret)
+				if ret != null and ret != '':
+					prints('get date server')
+					startSeconds = int(ret)
+					loaded = true
 	
-	if ret == null or ret == '':
-		prints('get date local')
-		startDate = null #OS.get_datetime(true)
-		startSeconds = -1 #OS.get_unix_time_from_datetime(startDate)
-	else:
-		prints('get date server')
-		#startDate = ret
-		startSeconds = int(ret)
-	
-	loaded = true
 	_initCountdown()

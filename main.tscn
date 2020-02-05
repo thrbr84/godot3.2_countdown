@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://scripts/main.gd" type="Script" id=1]
 [ext_resource path="res://scenes/countdown.tscn" type="PackedScene" id=2]
@@ -6,13 +6,361 @@
 [ext_resource path="res://icon.png" type="Texture" id=4]
 [ext_resource path="res://assets/fonts/LIONELLORegular.ttf" type="DynamicFontData" id=5]
 
-[sub_resource type="StreamTexture" id=2]
+[sub_resource type="GDScript" id=5]
+script/source = "extends Node2D
+
+export var name_countdown = 'timer1'
+export var wait_time = '00:00:00'
+export var end_label = 'GET IT!'
+export var unix_server = ''
+export(bool) var auto_restart = false
+var ended:bool = false
+var seconds:int = 0
+var startDate = OS.get_datetime(true)
+var startSeconds = 0
+var loaded = false
+
+signal start(_name_countdown)
+signal finish(_name_countdown)
+
+func _ready():
+	$timer.connect(\"timeout\", self, \"_on_timer_timeout\")
+	_start()
+
+func _on_timer_timeout():
+	if !loaded: return
+	
+	if seconds >= 0:
+		seconds -= 1
+		_format()
+	else:
+		_finish()
+
+func _format():
+	if !loaded: return
+	
+	if seconds >= 0:
+		var f = common.formatSeconds(seconds)
+		$label.text = str(f[0], \":\", f[1], \":\", f[2])
+
+func _start(_wait_time = null, _restart = false):
+	loaded = false
+	if _wait_time != null:
+		wait_time = _wait_time
+
+	if _restart == true:
+		prints(name_countdown, 'reset')
+		common.setCountdown(name_countdown, null)
+		common.save_game()
+		
+	_getDateTime()
+	
+func _initCountdown():
+	if !loaded: return
+	var current_timer = common.getCountdown(name_countdown)
+	if current_timer is Dictionary:
+		if current_timer.has(\"end\"):
+			seconds = int(current_timer.end) - int(startSeconds)
+			if seconds < 0:
+				_finish()
+				return
+	else:
+		_newTimer()
+	
+	ended = false
+	_format()
+	$timer.start()
+	emit_signal(\"start\", name_countdown)
+
+func _newTimer()->void:
+	var addSeconds = common.formatTime2Seconds(wait_time)
+	var endSeconds = int(startSeconds) + int(addSeconds)
+	
+	seconds = int(endSeconds) - int(startSeconds)
+	
+	common.setCountdown(name_countdown, {
+		\"start\": int(startSeconds),
+		\"end\": int(endSeconds)
+	})
+	common.save_game()
+
+func _finish():
+	if !loaded: return
+	ended = true
+	emit_signal(\"finish\", name_countdown)
+	$timer.stop()
+	
+	if end_label != \"\" and end_label!=null:
+		$label.text = str(end_label)
+	
+	if auto_restart == true:
+		prints(name_countdown, \" auto restart\")
+		_start(wait_time, true)
+
+
+func _getDateTime():
+	if unix_server != '' and unix_server != null:
+		var headers = [\"Content-Type: text/plain\"]
+		$http.request(unix_server, headers, true, HTTPClient.METHOD_GET)
+	else:
+		startDate = OS.get_datetime(true)
+		startSeconds = OS.get_unix_time_from_datetime(startDate)
+		loaded = true
+		_initCountdown()
+
+func _on_http_request_completed(result, response_code, headers, body):
+	var ret = null
+	if unix_server != '' and unix_server != null:
+		match result:
+			HTTPRequest.RESULT_SUCCESS:
+				ret = body.get_string_from_utf8()
+				if ret != null and ret != '':
+					prints('get date server')
+					startSeconds = int(ret)
+					loaded = true
+	
+	_initCountdown()
+"
+
+[sub_resource type="StreamTexture" id=1]
 flags = 4
 load_path = "res://.import/button.png-c79155b6e84601a7c5a042250ad77b07.stex"
 
-[sub_resource type="DynamicFont" id=1]
+[sub_resource type="GDScript" id=3]
+script/source = "extends Node2D
+
+export var name_countdown = 'timer1'
+export var wait_time = '00:00:00'
+export var end_label = 'GET IT!'
+export var unix_server = ''
+export(bool) var auto_restart = false
+var ended:bool = false
+var seconds:int = 0
+var startDate = OS.get_datetime(true)
+var startSeconds = 0
+var loaded = false
+
+signal start(_name_countdown)
+signal finish(_name_countdown)
+
+func _ready():
+	$timer.connect(\"timeout\", self, \"_on_timer_timeout\")
+	_start()
+
+func _on_timer_timeout():
+	if !loaded: return
+	
+	if seconds >= 0:
+		seconds -= 1
+		_format()
+	else:
+		_finish()
+
+func _format():
+	if !loaded: return
+	
+	if seconds >= 0:
+		var f = common.formatSeconds(seconds)
+		$label.text = str(f[0], \":\", f[1], \":\", f[2])
+
+func _start(_wait_time = null, _restart = false):
+	loaded = false
+	if _wait_time != null:
+		wait_time = _wait_time
+
+	if _restart == true:
+		prints(name_countdown, 'reset')
+		common.setCountdown(name_countdown, null)
+		common.save_game()
+		
+	_getDateTime()
+	
+func _initCountdown():
+	if !loaded: return
+	var current_timer = common.getCountdown(name_countdown)
+	if current_timer is Dictionary:
+		if current_timer.has(\"end\"):
+			seconds = int(current_timer.end) - int(startSeconds)
+			if seconds < 0:
+				_finish()
+				return
+	else:
+		_newTimer()
+	
+	ended = false
+	_format()
+	$timer.start()
+	emit_signal(\"start\", name_countdown)
+
+func _newTimer()->void:
+	var addSeconds = common.formatTime2Seconds(wait_time)
+	var endSeconds = int(startSeconds) + int(addSeconds)
+	
+	seconds = int(endSeconds) - int(startSeconds)
+	
+	common.setCountdown(name_countdown, {
+		\"start\": int(startSeconds),
+		\"end\": int(endSeconds)
+	})
+	common.save_game()
+
+func _finish():
+	if !loaded: return
+	ended = true
+	emit_signal(\"finish\", name_countdown)
+	$timer.stop()
+	
+	if end_label != \"\" and end_label!=null:
+		$label.text = str(end_label)
+	
+	if auto_restart == true:
+		prints(name_countdown, \" auto restart\")
+		_start(wait_time, true)
+
+
+func _getDateTime():
+	if unix_server != '' and unix_server != null:
+		var headers = [\"Content-Type: text/plain\"]
+		$http.request(unix_server, headers, true, HTTPClient.METHOD_GET)
+	else:
+		startDate = OS.get_datetime(true)
+		startSeconds = OS.get_unix_time_from_datetime(startDate)
+		loaded = true
+		_initCountdown()
+
+func _on_http_request_completed(result, response_code, headers, body):
+	var ret = null
+	if unix_server != '' and unix_server != null:
+		match result:
+			HTTPRequest.RESULT_SUCCESS:
+				ret = body.get_string_from_utf8()
+				if ret != null and ret != '':
+					prints('get date server')
+					startSeconds = int(ret)
+					loaded = true
+	
+	_initCountdown()
+"
+
+[sub_resource type="DynamicFont" id=2]
 size = 30
 font_data = ExtResource( 5 )
+
+[sub_resource type="GDScript" id=4]
+script/source = "extends Node2D
+
+export var name_countdown = 'timer1'
+export var wait_time = '00:00:00'
+export var end_label = 'GET IT!'
+export var unix_server = ''
+export(bool) var auto_restart = false
+var ended:bool = false
+var seconds:int = 0
+var startDate = OS.get_datetime(true)
+var startSeconds = 0
+var loaded = false
+
+signal start(_name_countdown)
+signal finish(_name_countdown)
+
+func _ready():
+	$timer.connect(\"timeout\", self, \"_on_timer_timeout\")
+	_start()
+
+func _on_timer_timeout():
+	if !loaded: return
+	
+	if seconds >= 0:
+		seconds -= 1
+		_format()
+	else:
+		_finish()
+
+func _format():
+	if !loaded: return
+	
+	if seconds >= 0:
+		var f = common.formatSeconds(seconds)
+		$label.text = str(f[0], \":\", f[1], \":\", f[2])
+
+func _start(_wait_time = null, _restart = false):
+	loaded = false
+	if _wait_time != null:
+		wait_time = _wait_time
+
+	if _restart == true:
+		prints(name_countdown, 'reset')
+		common.setCountdown(name_countdown, null)
+		common.save_game()
+		
+	_getDateTime()
+	
+func _initCountdown():
+	if !loaded: return
+	var current_timer = common.getCountdown(name_countdown)
+	if current_timer is Dictionary:
+		if current_timer.has(\"end\"):
+			seconds = int(current_timer.end) - int(startSeconds)
+			if seconds < 0:
+				_finish()
+				return
+	else:
+		_newTimer()
+	
+	ended = false
+	_format()
+	$timer.start()
+	emit_signal(\"start\", name_countdown)
+
+func _newTimer()->void:
+	var addSeconds = common.formatTime2Seconds(wait_time)
+	var endSeconds = int(startSeconds) + int(addSeconds)
+	
+	seconds = int(endSeconds) - int(startSeconds)
+	
+	common.setCountdown(name_countdown, {
+		\"start\": int(startSeconds),
+		\"end\": int(endSeconds)
+	})
+	common.save_game()
+
+func _finish():
+	if !loaded: return
+	ended = true
+	emit_signal(\"finish\", name_countdown)
+	$timer.stop()
+	
+	if end_label != \"\" and end_label!=null:
+		$label.text = str(end_label)
+	
+	if auto_restart == true:
+		prints(name_countdown, \" auto restart\")
+		_start(wait_time, true)
+
+
+func _getDateTime():
+	if unix_server != '' and unix_server != null:
+		var headers = [\"Content-Type: text/plain\"]
+		$http.request(unix_server, headers, true, HTTPClient.METHOD_GET)
+	else:
+		startDate = OS.get_datetime(true)
+		startSeconds = OS.get_unix_time_from_datetime(startDate)
+		loaded = true
+		_initCountdown()
+
+func _on_http_request_completed(result, response_code, headers, body):
+	var ret = null
+	if unix_server != '' and unix_server != null:
+		match result:
+			HTTPRequest.RESULT_SUCCESS:
+				ret = body.get_string_from_utf8()
+				if ret != null and ret != '':
+					prints('get date server')
+					startSeconds = int(ret)
+					loaded = true
+	
+	_initCountdown()
+"
 
 [node name="main" type="Node2D"]
 script = ExtResource( 1 )
@@ -39,30 +387,8 @@ normal = ExtResource( 3 )
 
 [node name="countdown" parent="buttons/btn1" instance=ExtResource( 2 )]
 position = Vector2( 48, 28 )
+script = SubResource( 5 )
 wait_time = "00:00:10"
-
-[node name="btn3" type="TouchScreenButton" parent="buttons"]
-self_modulate = Color( 0.5, 0.07, 0.07, 1 )
-position = Vector2( 202.815, 998.238 )
-normal = SubResource( 2 )
-
-[node name="countdown" parent="buttons/btn3" instance=ExtResource( 2 )]
-position = Vector2( 48, 28 )
-name_countdown = "timer3"
-wait_time = "00:00:10"
-unix_server = "http://unixtimestamp.birdy.studio"
-
-[node name="Label" type="Label" parent="buttons/btn3"]
-margin_left = -185.0
-margin_top = -49.0
-margin_right = 504.0
-margin_bottom = -3.0
-custom_fonts/font = SubResource( 1 )
-text = "unix timestamp from server"
-align = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="btn2" type="TouchScreenButton" parent="buttons"]
 self_modulate = Color( 0.5, 0.07, 0.07, 1 )
@@ -72,17 +398,46 @@ normal = ExtResource( 3 )
 [node name="countdown" parent="buttons/btn2" instance=ExtResource( 2 )]
 position = Vector2( 48, 24 )
 name_countdown = "timer2"
-wait_time = "00:10:00"
+wait_time = "00:02:00"
 
-[node name="countdown2" parent="buttons" instance=ExtResource( 2 )]
-position = Vector2( 250.815, 750.238 )
+[node name="btn3" type="TouchScreenButton" parent="buttons"]
+self_modulate = Color( 0.5, 0.07, 0.07, 1 )
+position = Vector2( 202.815, 998.238 )
+normal = SubResource( 1 )
+
+[node name="countdown" parent="buttons/btn3" instance=ExtResource( 2 )]
+position = Vector2( 48, 28 )
+script = SubResource( 3 )
 name_countdown = "timer3"
-wait_time = "00:01:00"
+wait_time = "00:00:15"
+unix_server = "http://unixtimestamp.birdy.studio"
+
+[node name="Label" type="Label" parent="buttons/btn3"]
+margin_left = -185.0
+margin_top = -49.0
+margin_right = 504.0
+margin_bottom = -3.0
+custom_fonts/font = SubResource( 2 )
+text = "unix timestamp from server"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="countdown" parent="buttons" instance=ExtResource( 2 )]
+position = Vector2( 250.815, 750.238 )
+script = SubResource( 4 )
+name_countdown = "timer4"
+wait_time = "00:00:20"
 auto_restart = true
 [connection signal="pressed" from="buttons/btn1" to="." method="_on_btn1_pressed"]
 [connection signal="finish" from="buttons/btn1/countdown" to="." method="_on_countdown_finish"]
-[connection signal="pressed" from="buttons/btn3" to="." method="_on_btn3_pressed"]
-[connection signal="finish" from="buttons/btn3/countdown" to="." method="_on_countdown_finish"]
+[connection signal="start" from="buttons/btn1/countdown" to="." method="_on_countdown_start"]
 [connection signal="pressed" from="buttons/btn2" to="." method="_on_btn2_pressed"]
 [connection signal="finish" from="buttons/btn2/countdown" to="." method="_on_countdown_finish"]
-[connection signal="finish" from="buttons/countdown2" to="." method="_on_countdown_finish"]
+[connection signal="start" from="buttons/btn2/countdown" to="." method="_on_countdown_start"]
+[connection signal="pressed" from="buttons/btn3" to="." method="_on_btn3_pressed"]
+[connection signal="finish" from="buttons/btn3/countdown" to="." method="_on_countdown_finish"]
+[connection signal="start" from="buttons/btn3/countdown" to="." method="_on_countdown_start"]
+[connection signal="finish" from="buttons/countdown" to="." method="_on_countdown_finish"]
+[connection signal="start" from="buttons/countdown" to="." method="_on_countdown_start"]
