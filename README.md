@@ -25,6 +25,7 @@ você pode fechar o jogo que o contador continua a contagem.
 - end_label - Label final, você pode mostrar uma mensagem no fim do countdown
 - unix_server - Servidor Unix, exemplo: ```https://unixtimestamp.birdy.studio``` o servidor deve retornar um timestamp puro! 
 - auto_restart - Auto Reinicialização
+- auto_start - Auto inicialização
 
 *O node "countdown" emite um sinal "start" e "finish" e passa como parâmetro o nome do contador "name_countdown"
 
