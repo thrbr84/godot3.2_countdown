@@ -18,7 +18,68 @@ var http = HTTPRequest.new()
 signal start(_name_countdown)
 signal finish(_name_countdown)
 
+# ----
+
+export var save_path = "user://savegame.save"
+var save_data = {}
+
+func save_game()->void:
+	var save_game = File.new()
+	save_game.open(save_path, File.WRITE)
+	save_game.store_var(save_data)
+	save_game.close()
+
+func load_game()->void:
+	var save_game = File.new()
+	if not save_game.file_exists(save_path):
+		return
+
+	save_game.open(save_path, File.READ)
+	save_data = save_game.get_var()
+	save_game.close()
+
+func getCountdown(timer_name = '')->Dictionary:
+	var ret = null
+	if save_data is Dictionary:
+		if save_data.has("countdown"):
+			if save_data['countdown'].has(timer_name):
+				ret = save_data['countdown'][timer_name]
+	return ret
+	
+func setCountdown(timer_name = '', data = {})->void:
+	if !save_data is Dictionary:
+		save_data = {}
+	
+	if !save_data.has("countdown"):
+		save_data['countdown'] = {}
+		
+	if !save_data['countdown'].has(timer_name):
+		save_data['countdown'][timer_name] = {}
+			
+	save_data['countdown'][timer_name] = data
+
+func formatSeconds(_seconds:int = 0)->Array:
+	var second = floor(_seconds % 60)
+	var minute = floor((_seconds / 60) % 60)
+	var hour = floor(_seconds / 3600)
+	return [
+		str(hour) if hour >= 10 else str('0', hour), 
+		str(minute) if minute >= 10 else str('0', minute), 
+		str(second) if second >= 10 else str('0', second),
+		]
+
+func formatTime2Seconds(_time = "")->int:
+	var s = _time.split(":")
+	return (int(s[0]) * 3600) + (int(s[1]) * 60) + (int(s[2]))
+
+
+
+#-----------------------
+
+
 func _ready():
+	load_game()
+	
 	timer.connect("timeout", self, "_on_timer_timeout")
 	http.connect("request_completed", self, "_on_http_request_completed")
 	
@@ -27,6 +88,9 @@ func _ready():
 	
 	if auto_start == true:
 		_start()
+
+func is_ended()->bool:
+	return ended
 
 func _on_timer_timeout():
 	if !loaded: return
@@ -41,7 +105,7 @@ func _format():
 	if !loaded: return
 	
 	if seconds >= 0:
-		var f = common.formatSeconds(seconds)
+		var f = formatSeconds(seconds)
 		self.text = str(f[0], ":", f[1], ":", f[2])
 
 func _start(_wait_time = null, _restart = false):
@@ -50,14 +114,14 @@ func _start(_wait_time = null, _restart = false):
 		wait_time = _wait_time
 
 	if _restart == true:
-		common.setCountdown(name_countdown, null)
-		common.save_game()
+		setCountdown(name_countdown, null)
+		save_game()
 		
 	_getDateTime()
 	
 func _initCountdown():
 	if !loaded: return
-	var current_timer = common.getCountdown(name_countdown)
+	var current_timer = getCountdown(name_countdown)
 	if current_timer is Dictionary:
 		if current_timer.has("end"):
 			seconds = int(current_timer.end) - int(startSeconds)
@@ -73,16 +137,16 @@ func _initCountdown():
 	emit_signal("start", name_countdown)
 
 func _newTimer()->void:
-	var addSeconds = common.formatTime2Seconds(wait_time)
+	var addSeconds = formatTime2Seconds(wait_time)
 	var endSeconds = int(startSeconds) + int(addSeconds)
 	
 	seconds = int(endSeconds) - int(startSeconds)
 	
-	common.setCountdown(name_countdown, {
+	setCountdown(name_countdown, {
 		"start": int(startSeconds),
 		"end": int(endSeconds)
 	})
-	common.save_game()
+	save_game()
 
 func _finish():
 	if !loaded: return
@@ -118,4 +182,5 @@ func _on_http_request_completed(result, response_code, headers, body):
 					loaded = true
 	
 	_initCountdown()
+
 
